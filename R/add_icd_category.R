@@ -1,12 +1,17 @@
-
+#' Add a column of ICD categories to a data.frame
 #' @export
 #' @import parallel
-add_icd_category <- function(icd, icd_column, type = c("disease", "diagnosis"),
-                           icd_lookup_column = "global_short_description",
-                           parallel = FALSE,
-                           cluster_num = parallel::detectCores() - 1) {
-  # icd = diagnoses; icd_column = "diagnosis"; type = c("disease", "diagnosis"); icd_lookup_column =  "global_short_description"
-  # parallel = TRUE; clusters = parallel::detectCores() - 1
+#' @param icd A data.frame with ICD 9 or 10 diagnoses.
+#' @param icd_column The name of the column of ICD codes.
+#' @param icd_type Are these disease or diagnosis codes.
+#' @param icd_lookup_column Which column from \code{icd_lookup} should be returned. You
+#'                          can see this data frame by running \code{data(icd_lookup)}.
+#' @param parallel Use parallel processing?
+#' @param cluster_num Number of clusters to use if \code{parallel} is TRUE.
+add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis"),
+                             icd_lookup_column = "global_short_description",
+                             parallel = FALSE,
+                             cluster_num = parallel::detectCores() - 1) {
 
   original_names <- names(icd)
 
@@ -19,24 +24,21 @@ add_icd_category <- function(icd, icd_column, type = c("disease", "diagnosis"),
 
   icd_cleaned <- gsub("\\.", "", icd_distinct[[icd_column]])
 
-  # filter_vector <- 1:20; icd_distinct <- icd_distinct %>% filter(row_number() %in% filter_vector); icd_cleaned <- icd_cleaned[filter_vector]
+  lookup <- icd_lookup %>%
+    dplyr::filter(type == icd_type)
 
   if(parallel) {
 
     cl <- parallel::makeCluster(cluster_num)
 
-    parallel::clusterEvalQ(cl, {
-      icd_lookup <- IUHhelpers::icd_lookup
-      NULL
-    })
-
-    icd_distinct[["matched_code"]] <- parallel::parSapply(cl, icd_cleaned, match_icd)
+    icd_distinct[["matched_code"]] <- parallel::parSapply(cl, icd_cleaned,
+                                                          match_icd, lookup = lookup)
 
     parallel::stopCluster(cl)
 
   } else {
 
-    icd_distinct[["matched_code"]] <- sapply(icd_cleaned, match_icd)
+    icd_distinct[["matched_code"]] <- sapply(icd_cleaned, match_icd, lookup = lookup)
 
   }
 
@@ -49,13 +51,13 @@ add_icd_category <- function(icd, icd_column, type = c("disease", "diagnosis"),
   icd
 }
 
-match_icd <- function(code) {
+match_icd <- function(code, lookup) {
   # icd <- icd_lookup; code <- "Z98890"
   matched_icd <- c()
 
   while(length(matched_icd) == 0 & nchar(code) > 1) {
 
-    matched_icd <- icd_lookup[grepl(paste0("^", code), icd_lookup[["icd_code"]]), "icd_code"]
+    matched_icd <- lookup[grepl(paste0("^", code), lookup[["icd_code"]]), "icd_code"]
 
     code <- substr(code, 1, nchar(code) - 1)
   }
