@@ -25,7 +25,7 @@ add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis
   icd_cleaned <- gsub("\\.", "", icd_distinct[[icd_column]])
 
   lookup <- icd_lookup %>%
-    dplyr::filter(type == icd_type)
+    dplyr::filter(type == icd_type[1])
 
   if(parallel) {
 
