@@ -4,7 +4,7 @@
 \alias{find_corr_groups}
 \title{Find highly correlated groups for dimension reduction}
 \usage{
-find_corr_groups(data, cutoff = 0.8, cor_mat = FALSE)
+find_corr_groups(data, cutoff = 0.9, cor_mat = FALSE)
 }
 \arguments{
 \item{data}{A data.frame or matrix of features for modeling}
