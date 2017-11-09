@@ -16,18 +16,13 @@
 #' for ranking the features. The order for each column should be increasing, i.e.
 #' a rank of 1 will beat a rank of 2.
 select_model_features <- function(features, corr_cutoff = .9, rank_table) {
-  features <- mtcars; corr_cutoff = .75
-  rank_table <- data.frame(variable = names(mtcars),
-                           priority = c(rep(1, 5), rep(2, 6)),
-                           rank = c(1, rep(NA, 3), 2, 1:3, rep(NA, 3)),
-                           stringsAsFactors = FALSE)
 
-  groups <- find_corr_groups(features, cutoff = corr_cutoff)
+  corr_groups <- find_corr_groups(features, cutoff = corr_cutoff)
+  removed_features <- c()
 
-  if(length(groups) != 0) {
+  if(length(corr_groups) != 0) {
 
-    for(i in groups) {
-      # i = groups[[1]]
+    for(i in corr_groups) {
 
       rank_columns <- names(rank_table)[names(rank_table) != "variable"]
 
@@ -54,29 +49,54 @@ select_model_features <- function(features, corr_cutoff = .9, rank_table) {
 
       if(nrow(group) > 1) {
 
-        corr <- features %>%
-          dplyr::select_at(group$variable) %>%
-          cor(use = "na.or.complete") %>%
-          as.table() %>%
-          as.data.frame() %>%
-          filter(Var1 != Var2)
-
-        sum_cor <- sapply(group$variable, function(variable, corr) {
-          corr_var <- corr %>%
-            dplyr::filter(Var1 == variable | Var2 == variable)
-          sum(corr_var$Freq, na.rm = TRUE)
-        }, corr = corr)
-
-        min_corr_variable <- group$variable[sum_cor == min(sum_cor, na.rm = TRUE)]
+        min_corr_feature <- features %>%
+          find_min_correlated_feature(group$variable)
 
         group <- group %>%
-          dplyr::filter(variable == min_corr_variable[1])
+          dplyr::filter(variable == min_corr_feature[1])
 
       }
+
+      removed_features <- c(removed_features, i[i != group$variable])
+
     }
   } else {
 
-    warning("no correlation groups found")
+    warning("no correlated groups found, so no features removed")
 
+    corr_groups <- NA
+    removed_features <- NA
   }
+
+  rank_table <- rank_table %>%
+    dplyr::filter(!variable %in% removed_features) %>%
+    dplyr::arrange_at(names(rank_table)[names(rank_table) != "variable"])
+
+  features <- features %>%
+    dplyr::select_at(rank_table$variable) %>%
+    as.data.frame()
+
+  attr(features, "correlated_groups") <- corr_groups
+  attr(features, "removed_features") <- removed_features
+
+  features
+}
+
+find_min_correlated_feature <- function(features, group) {
+  # features <- features %>% dplyr::select_at(group$variable)
+  corr <- features %>%
+    cor(use = "na.or.complete") %>%
+    as.table() %>%
+    as.data.frame() %>%
+    filter(Var1 != Var2)
+
+  sum_cor <- sapply(group, function(variable, corr) {
+    corr_var <- corr %>%
+      dplyr::filter(Var1 == variable | Var2 == variable)
+    sum(corr_var$Freq, na.rm = TRUE)
+  }, corr = corr)
+
+  min_corr_feature <- group[sum_cor == min(sum_cor, na.rm = TRUE)]
+
+  min_corr_feature
 }
