@@ -28,5 +28,6 @@ is that you will want to remove highly correlated information. The rank_table
 supplies the information needed to choose the best member of each highly
 correlated group. The features data frame is returned with the chosen features.
 The columns will be ordered from highest ranked (left) to lowest rank,
-along with an attribute giving the rank information.
+along with an attribute giving the rank information. Only numeric features will
+be considered.
 }

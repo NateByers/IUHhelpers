@@ -7,7 +7,8 @@
 #' supplies the information needed to choose the best member of each highly
 #' correlated group. The features data frame is returned with the chosen features.
 #' The columns will be ordered from highest ranked (left) to lowest rank,
-#' along with an attribute giving the rank information.
+#' along with an attribute giving the rank information. Only numeric features will
+#' be considered.
 #' @param features A data frame of numeric features
 #' @param corr_cutoff Minimum correlation used to make groups
 #' @param rank_table A data frame of information for selecting features. The
@@ -16,6 +17,24 @@
 #' for ranking the features. The order for each column should be increasing, i.e.
 #' a rank of 1 will beat a rank of 2.
 select_model_features <- function(features, corr_cutoff = .9, rank_table) {
+
+  classes <- sapply(features, class)
+
+  if(sum(classes %in% c("character", "factor")) > 0) {
+    warning("non-numeric features were converted to numeric to find correlations")
+
+    non_numerics <- features[, classes %in% c("character", "factor")]
+
+    for(i in seq_along(classes)) {
+      if(classes[i] == "character") {
+        features[[i]] <- as.factor(features[[i]])
+        classes[1] <- "factor"
+      }
+      if(classes[i] == "factor") {
+        features[[i]] <- as.numeric(features[[i]])
+      }
+    }
+  }
 
   corr_groups <- find_corr_groups(features, cutoff = corr_cutoff)
   removed_features <- c()
@@ -78,6 +97,12 @@ select_model_features <- function(features, corr_cutoff = .9, rank_table) {
 
   attr(features, "correlated_groups") <- corr_groups
   attr(features, "removed_features") <- removed_features
+
+  if(exists("non_numerics")) {
+    for(i in names(non_numerics)) {
+      features[, i] <- non_numerics[, i]
+    }
+  }
 
   features
 }

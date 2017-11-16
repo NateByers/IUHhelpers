@@ -8,6 +8,7 @@
 #' @return A list of two \code{data.frame}s: links and nodes.
 #' @examples
 #'library(EDW)
+#'library(dplyr)
 #'library(networkD3)
 #'
 #'edw <- connect_edw() %>%

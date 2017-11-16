@@ -23,6 +23,7 @@ Process a data.frame for a Sankey network graph
 }
 \examples{
 library(EDW)
+library(dplyr)
 library(networkD3)
 
 edw <- connect_edw() \%>\%
