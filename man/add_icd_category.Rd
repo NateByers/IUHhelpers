@@ -4,7 +4,7 @@
 \alias{add_icd_category}
 \title{Add a column of ICD categories to a data.frame}
 \usage{
-add_icd_category(icd, icd_column, icd_type = c("disease", "diagnosis"),
+add_icd_category(icd, icd_column, icd_type = c("diagnosis", "procedure"),
   icd_lookup_column = "global_short_description", parallel = FALSE,
   cluster_num = parallel::detectCores() - 1)
 }

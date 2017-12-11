@@ -10,6 +10,7 @@ cleanup_for_headers <- function(x) {
   x <- gsub(";|:", "_", x)
   x <- gsub("\\(|\\)", "_", x)
   x[grepl("^\\d", x)] <- paste0("X", x[grepl("^\\d", x)])
+  x <- gsub("_{2,}", "_", x)
 
   x
 }

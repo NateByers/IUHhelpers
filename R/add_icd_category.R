@@ -8,11 +8,11 @@
 #'                          can see this data frame by running \code{data(icd_lookup)}.
 #' @param parallel Use parallel processing?
 #' @param cluster_num Number of clusters to use if \code{parallel} is TRUE.
-add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis"),
+add_icd_category <- function(icd, icd_column, icd_type = c("diagnosis", "procedure"),
                              icd_lookup_column = "global_short_description",
                              parallel = FALSE,
                              cluster_num = parallel::detectCores() - 1) {
-
+  
   original_names <- names(icd)
 
   icd <- icd %>%
@@ -24,7 +24,9 @@ add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis
 
   icd_cleaned <- gsub("\\.", "", icd_distinct[[icd_column]])
 
-  lookup <- icd_lookup %>%
+  lookup <- IUHhelpers::icd_lookup
+  
+  lookup <-  lookup %>%
     dplyr::filter(type == icd_type[1])
 
   if(parallel) {
@@ -41,10 +43,11 @@ add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis
     icd_distinct[["matched_code"]] <- sapply(icd_cleaned, match_icd, lookup = lookup)
 
   }
-
+  
   icd <- icd %>%
     dplyr::inner_join(icd_distinct, icd_column) %>%
-    dplyr::left_join(icd_lookup, c("matched_code" = "icd_code")) %>%
+    dplyr::left_join(select_at(lookup, c("icd_code", icd_lookup_column)),
+                     c("matched_code" = "icd_code")) %>%
     dplyr::arrange(row_num) %>%
     dplyr::select_at(c(original_names, icd_lookup_column))
 
@@ -52,7 +55,7 @@ add_icd_category <- function(icd, icd_column, icd_type = c("disease", "diagnosis
 }
 
 match_icd <- function(code, lookup) {
-  # icd <- icd_lookup; code <- "Z98890"
+
   matched_icd <- c()
 
   while(length(matched_icd) == 0 & nchar(code) > 1) {
