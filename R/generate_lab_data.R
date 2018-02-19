@@ -1,6 +1,31 @@
-
+#' Generate data to test lab budget project
 #' @export
 #' @import parallel
+#' @param years How many years of data
+#' @param by What time duration do you want
+#' @param mean_volume What is the mean volume for this lab test
+#' @param sd_volume What is the standard deviation for these tests
+#' @param trend Do you want a trend over time
+#' @param seasonality Do you want seasonality during the year
+#' @param predictor_variables How many predictor variables do you want
+#' @param noisy_variables How many non-predictive variables do you want
+#' @examples 
+#' library(dplyr)
+#' library(tidyr)
+#' library(ggplot2)
+#' 
+#' x <- generate_lab_data(years = 3, by = "week", mean_volume = 100, 
+#'                        sd_volume = 20, trend = TRUE, seasonality = TRUE, 
+#'                        predictor_variables = 2, noisy_variables = 1) 
+#' 
+#' lm(test_volume ~ noisy1, data = x) %>% summary()
+#' lm(test_volume ~ predictor1, data = x) %>% summary()
+#' lm(test_volume ~ predictor2, data = x) %>% summary()
+#' lm(test_volume ~ predictor1 + predictor2, data = x) %>% summary()
+#' 
+#' x <- tidyr::gather(x, key = "key", value = "value", test_volume:noisy1)
+#' 
+#' ggplot(x, aes(index, value, color = key)) + geom_point()
 generate_lab_data <- function(years, by = c("day", "week", "month", "year"), 
                               mean_volume = 100, sd_volume = 20, 
                               trend = FALSE, seasonality = FALSE, 
