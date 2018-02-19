@@ -3,6 +3,7 @@
 export(add_icd_category)
 export(cleanup_for_headers)
 export(find_corr_groups)
+export(generate_lab_data)
 export(process_sankey)
 export(select_model_features)
 import(dplyr)
