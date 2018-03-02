@@ -1,0 +1,13 @@
+test_name,years,by,mean_volume,sd_volume,trend,seasonality,predictor_variables,noisy_variables,shape
+a,3,month,100,20,TRUE,TRUE,0,2,long
+b,3,month,100,20,FALSE,TRUE,0,2,long
+c,3,month,100,20,TRUE,FALSE,0,2,long
+d,3,month,100,20,FALSE,FALSE,0,2,long
+e,3,month,100,20,TRUE,TRUE,1,1,long
+f,3,month,100,20,FALSE,TRUE,1,1,long
+g,3,month,100,20,TRUE,FALSE,1,1,long
+h,3,month,100,20,FALSE,FALSE,1,1,long
+i,3,month,100,20,TRUE,TRUE,2,0,long
+j,3,month,100,20,FALSE,TRUE,2,0,long
+k,3,month,100,20,TRUE,FALSE,2,0,long
+l,3,month,100,20,FALSE,FALSE,2,0,long
