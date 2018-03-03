@@ -3,7 +3,8 @@
 #' @export
 #' @import parallel
 #' @param test_name Name for this test
-#' @param years How many years of data
+#' @param historical_years How many years of historical data
+#' @param future_years How many future years of predictor data
 #' @param by What time duration do you want
 #' @param mean_volume What is the mean volume for this lab test
 #' @param sd_volume What is the standard deviation for these tests
@@ -17,9 +18,11 @@
 #' library(tidyr)
 #' library(ggplot2)
 #' 
-#' x <- simulate_lab_data(test_name = "a", years = 3, by = "week", mean_volume = 100, 
+#' x <- simulate_lab_data(test_name = "a", historical_years = 3,
+#'                        future_years = 1, by = "week", mean_volume = 100, 
 #'                        sd_volume = 20, trend = TRUE, seasonality = TRUE, 
-#'                        predictor_variables = 2, noisy_variables = 1) 
+#'                        predictor_variables = 2, noisy_variables = 1) %>%
+#'                        dplyr::filter(historical)
 #' 
 #' lm(test_volume ~ noisy1, data = x) %>% summary()
 #' lm(test_volume ~ predictor1, data = x) %>% summary()
@@ -29,22 +32,24 @@
 #' x <- tidyr::gather(x, key = "key", value = "value", test_volume:noisy1)
 #' 
 #' ggplot(x, aes(time_index, value, color = key)) + geom_point()
-simulate_lab_data <- function(test_name, years, by = c("day", "week", "month", "year"), 
+simulate_lab_data <- function(test_name, historical_years, future_years = 1, 
+                              by = c("day", "week", "month", "year"), 
                               mean_volume = 100, sd_volume = 20, 
                               trend = FALSE, seasonality = FALSE, 
                               predictor_variables = 0, noisy_variables = 0,
                               shape = c("wide", "long")) {
-  # test_name = "a"; years = 3; by = "month"; mean_volume = 100; sd_volume = 20; trend = TRUE; seasonality = TRUE;  predictor_variables = 2; noisy_variables = 1; shape = "long"
+  # test_name = "a"; historical_years = 3; future_years = 1; by = "month"; mean_volume = 100; sd_volume = 20; trend = TRUE; seasonality = TRUE;  predictor_variables = 2; noisy_variables = 1; shape = "long"
   
   points_per_year <- c("day" = 365, "week" = 52, "month" = 12, "year" = 1)
   points_per_year <- points_per_year[names(points_per_year) == by]
   
-  n <- years*points_per_year
+  n_historical <- historical_years*points_per_year
+  n_future <- future_years*points_per_year
   
-  lab_data <- rnorm(n = n, mean = mean_volume, sd = sd_volume) 
+  lab_data <- rnorm(n = n_historical, mean = mean_volume, sd = sd_volume) 
   
   if(trend) {
-    trend_bump <- seq(from = 0, to = 3*sd_volume, length.out = n) 
+    trend_bump <- seq(from = 0, to = 3*sd_volume, length.out = n_historical) 
     
     lab_data <- lab_data + trend_bump
   }
@@ -60,17 +65,25 @@ simulate_lab_data <- function(test_name, years, by = c("day", "week", "month", "
   lab_data <- round(lab_data)
   lab_data[lab_data < 0] <- 0
   
-  lab_data_frame <- data.frame(time_index = 1:n, test_name = test_name, 
-                               year = rep(1:years, each = points_per_year), 
-                               by = rep(1:points_per_year, years),
-                               test_volume = lab_data, 
+  lab_data_frame <- data.frame(time_index = 1:(n_historical + n_future),
+                               test_name = test_name, 
+                               year = rep(1:(historical_years + future_years),
+                                          each = points_per_year), 
+                               by = rep(1:points_per_year, 
+                                        historical_years + future_years),
+                               historical = c(rep(TRUE, n_historical),
+                                              rep(FALSE, n_future)),
+                               test_volume = c(lab_data, rep(NA, n_future)), 
                                stringsAsFactors = FALSE) 
   names(lab_data_frame)[names(lab_data_frame) == "by"] <- by
   
   if(predictor_variables > 0) {
-    pred_var <- lab_data + rnorm(n = n, mean = 0, sd = sd_volume)
+    pred_var <- lab_data + rnorm(n = n_historical, mean = 0, sd = sd_volume)
     pred_var[pred_var < 0] <- 0
-    pred_var_data_frame <- data.frame(pred_var = pred_var)
+    
+    future <- tail(pred_var, points_per_year)*future_years
+    
+    pred_var_data_frame <- data.frame(pred_var = c(pred_var, future))
     
     if(predictor_variables > 1) {
        split_predictor <- lapply(pred_var_data_frame$pred_var, function(x) {
@@ -89,15 +102,14 @@ simulate_lab_data <- function(test_name, years, by = c("day", "week", "month", "
   
   if(noisy_variables > 0) {
     for(j in 1:noisy_variables) {
-      lab_data_frame[[paste0("noisy", j)]] <- rnorm(n = n, mean = mean_volume,
-                                                    sd = sd_volume)
+      noisy <- rnorm(n = n_historical + n_future, mean = mean_volume,
+                     sd = sd_volume) %>%
+        round()
+      noisy[noisy < 0] <- 0
+      
+      lab_data_frame[[paste0("noisy", j)]] <- noisy
     }
   }
-  
-  attr(lab_data_frame, "class") <- c("lab_data", "data.frame")
-  attr(lab_data_frame, "years") <- unname(years)
-  attr(lab_data_frame, "by") <- by
-  attr(lab_data_frame, "points_per_year") <- unname(points_per_year)
   
   if(shape[1] == "long" & predictor_variables + noisy_variables > 0) {
     gather_columns <- "test_volume"
@@ -108,7 +120,7 @@ simulate_lab_data <- function(test_name, years, by = c("day", "week", "month", "
       gather_columns <- c(gather_columns, paste0("noisy", 1:noisy_variables))
     }
     lab_data_frame <- tidyr::gather(lab_data_frame, "variable", "value",
-                                    !!gather_columns) %>%
+                                    !!gather_columns, na.rm = TRUE) %>%
       arrange(time_index, desc(variable))
   }
   

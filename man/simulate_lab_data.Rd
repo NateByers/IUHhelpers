@@ -4,14 +4,17 @@
 \alias{simulate_lab_data}
 \title{Generate data to test lab budget project}
 \usage{
-simulate_lab_data(test_name, years, by = c("day", "week", "month", "year"),
-  mean_volume = 100, sd_volume = 20, trend = FALSE, seasonality = FALSE,
+simulate_lab_data(test_name, historical_years, future_years = 1,
+  by = c("day", "week", "month", "year"), mean_volume = 100,
+  sd_volume = 20, trend = FALSE, seasonality = FALSE,
   predictor_variables = 0, noisy_variables = 0, shape = c("wide", "long"))
 }
 \arguments{
 \item{test_name}{Name for this test}
 
-\item{years}{How many years of data}
+\item{historical_years}{How many years of historical data}
+
+\item{future_years}{How many future years of predictor data}
 
 \item{by}{What time duration do you want}
 
@@ -37,9 +40,11 @@ library(dplyr)
 library(tidyr)
 library(ggplot2)
 
-x <- simulate_lab_data(test_name = "a", years = 3, by = "week", mean_volume = 100, 
+x <- simulate_lab_data(test_name = "a", historical_years = 3,
+                       future_years = 1, by = "week", mean_volume = 100, 
                        sd_volume = 20, trend = TRUE, seasonality = TRUE, 
-                       predictor_variables = 2, noisy_variables = 1) 
+                       predictor_variables = 2, noisy_variables = 1) \%>\%
+                       dplyr::filter(historical)
 
 lm(test_volume ~ noisy1, data = x) \%>\% summary()
 lm(test_volume ~ predictor1, data = x) \%>\% summary()

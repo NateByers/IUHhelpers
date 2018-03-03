@@ -5,15 +5,22 @@ characterize_lab_data <- function(lab_data,
                                   test_name_column = "test_name",
                                   year_column = "year",
                                   by_column = "month",
+                                  historical_column = "historical",
                                   variable_column = "variable",
                                   value_column = "value",
                                   test_volume_variable = "test_volume") {
   # lab_data <- read.csv("C:/Users/nbyers1/Documents/Repositories/Lab_Budget/simulate/simulated_lab_data.csv", stringsAsFactors = FALSE)
-  # time_index_column = "time_index"; test_name_column = "test_name"; year_column = "year"; by_column = "month"; variable_column = "variable"; value_column = "value"; test_volume_variable = "test_volume"
+  # time_index_column = "time_index"; test_name_column = "test_name"; year_column = "year"; by_column = "month"; historical_column = "historical"; variable_column = "variable"; value_column = "value"; test_volume_variable = "test_volume"
+  
+  points_per_year <- c("day" = 365, "week" = 52, "month" = 12, "year" = 1)[by_column]
+  
   columns <- c(time_index_column = time_index_column, 
                test_name_column = test_name_column,
-               year_column = year_column, by_column = by_column, 
-               variable_column = variable_column, value_column = value_column)
+               year_column = year_column, 
+               by_column = by_column,
+               historical_column = historical_column,
+               variable_column = variable_column, 
+               value_column = value_column)
   
   for(i in names(columns)) {
     current_name <- columns[[i]]
@@ -23,27 +30,26 @@ characterize_lab_data <- function(lab_data,
   volume_data <- lab_data %>%
     dplyr::filter(variable_column == test_volume_variable) %>%
     dplyr::group_by(test_name_column) %>%
-    dplyr::summarize(trend = check_trend(value_column, variable_column,
-                                         test_volume_variable),
-                     seasonal = check_seasonality(value_column, by_,
-                                                  variable_column,
-                                                  test_volume_variable),
-                     predictors = check_predictors(value_column, variable_column,
+    dplyr::summarize(trend = check_trend(value_column),
+                     seasonal = check_seasonality(value_column, points_per_year))
+  
+  predictor_data <- lab_data %>%
+    dplyr::filter(historical_column) %>%
+    dplyr::group_by(test_name_column) %>%
+    dplyr::summarise(predictors = check_predictors(value_column, variable_column,
                                                    test_volume_variable, 
                                                    time_index_column))
-    
-}
-
-check_trend <- function(x, var_col, test_vol_var) {
-  trend::mk.test(x[var_col == test_vol_var])$p.value < .05
-}
-
-check_seasonality <- function(x, by, var_col, test_vol_var) {
-  # x <- lab_data %>% dplyr::filter(variable_column == "test_volume", test_name_column == "a") %>% dplyr::pull(value_column); by = by_column
-  x <- x[var_col == test_vol_var]
   
-  points_per_year <- c("day" = 365, "week" = 365/7, "month" = 12, "year" = 1)
-  ts_object <- ts(data = x, end = length(x), frequency = points_per_year[by])
+  dplyr::inner_join(volume_data, predictor_data, "test_name_column")
+}
+
+check_trend <- function(x) {
+  trend::mk.test(x)$p.value < .1
+}
+
+check_seasonality <- function(x, frequency) {
+  
+  ts_object <- ts(data = x, end = length(x), frequency = frequency)
   
   fit <- forecast::tbats(ts_object)
   
@@ -53,10 +59,10 @@ check_seasonality <- function(x, by, var_col, test_vol_var) {
 }
 
 check_predictors <- function(values, variables, test_vol_var, time_index_col) {
-  # values <- lab_data %>% dplyr::filter(test_name_column == "h") %>% dplyr::pull(value_column)
-  # variables <- lab_data %>% dplyr::filter(test_name_column == "h") %>% dplyr::pull(variable_column)
-  # test_vol_var <- test_volume_variable; 
-  # time_index_col <- lab_data %>% dplyr::filter(test_name_column == "h") %>% dplyr::pull(time_index_column)
+  # values <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(value_column)
+  # variables <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(variable_column)
+  # test_vol_var <- test_volume_variable;
+  # time_index_col <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(time_index_column)
   
   model_data <- data.frame(index = time_index_col, variable = variables, value = values, stringsAsFactors = FALSE) %>%
     tidyr::spread(variable, value) %>%
@@ -77,9 +83,15 @@ check_predictors <- function(values, variables, test_vol_var, time_index_col) {
   
   step_fit <- MASS::stepAIC(fit, scope = list(upper = upper_formula), 
                             trace = FALSE)
-  broom::tidy(step_fit) %>%
+  predictors <- broom::tidy(step_fit) %>%
     dplyr::filter(term != "(Intercept)") %>%
     dplyr::pull(term) %>%
-    paste(collapse = "|")
+    paste(collapse = "|") %>%
+    trimws()
   
+  if(!grepl("\\S", predictors)) {
+    predictors <- NA
+  }
+  
+  predictors
 }
