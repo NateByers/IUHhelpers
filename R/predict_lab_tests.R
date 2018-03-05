@@ -1,5 +1,6 @@
 #' @export
-predict_lab_tests <- function(lab_data,
+#' @import fitdistrplus
+predict_lab_tests <- function(lab_data, 
                               time_index_column = "time_index",
                               test_name_column = "test_name",
                               year_column = "year",
@@ -7,9 +8,11 @@ predict_lab_tests <- function(lab_data,
                               historical_column = "historical",
                               variable_column = "variable",
                               value_column = "value",
-                              test_volume_variable = "test_volume") {
+                              test_volume_variable = "test_volume",
+                              confidence_interval = .90, 
+                              random_n = 10000) {
   # lab_data <- read.csv("data-raw/simulated_lab_data.csv", stringsAsFactors = FALSE)
-  # time_index_column = "time_index"; test_name_column = "test_name"; year_column = "year"; by_column = "month"; historical_column = "historical"; variable_column = "variable"; value_column = "value"; test_volume_variable = "test_volume"
+  # random_n <- 10000; confidence_interval = .90; time_index_column = "time_index"; test_name_column = "test_name"; year_column = "year"; by_column = "month"; historical_column = "historical"; variable_column = "variable"; value_column = "value"; test_volume_variable = "test_volume"
   points_per_year <- c("day" = 365, "week" = 52, "month" = 12, "year" = 1)[by_column]
   
   columns <- c(time_index_column = time_index_column, 
@@ -41,7 +44,9 @@ predict_lab_tests <- function(lab_data,
                                                    seasonal,
                                                    predictors, 
                                                    test_volume_variable,
-                                                   points_per_year))
+                                                   points_per_year,
+                                                   confidence_interval,
+                                                   random_n))
 }
 
 predict_lab_test <- function(time_index, 
@@ -52,7 +57,9 @@ predict_lab_test <- function(time_index,
                              value, 
                              trend,
                              seasonal,
-                             predictors) {
+                             predictors,
+                             confidence_interval,
+                             random_n) {
   # xyz <- lab_data %>%
   #   dplyr::filter(test_name_column == "a")
   #   
@@ -67,6 +74,7 @@ predict_lab_test <- function(time_index,
   # predictors <- xyz$predictors
   # test_volume_variable <- "test_volume"
   # points_per_year <- 12
+  # confidence_interval <- 90
   
   dat <- data.frame(time_index, year, by, historical, variable, value, 
                     stringsAsFactors = FALSE)
@@ -103,7 +111,44 @@ predict_lab_test <- function(time_index,
 }
 
 predict_random <- function(dat, test_volume_variable) {
+  test_volume <- dat %>%
+    dplyr::filter(variable == test_volume_variable) %>%
+    dplyr::pull(value)
   
+  distributions <- c("normal", "gamma", "poisson")
+  dist_tests <- lapply(distributions, 
+                       function(x) MASS::fitdistr(test_volume, x)$loglik) %>%
+    unlist() %>%
+    abs()
+  
+  fit_distribution <- distributions[min(dist_tests) == dist_tests]
+  
+  center <- mean(test_volume)
+  
+  if(fit_distribution == "normal") {
+    random_numbers <- rnorm(random_n, center, sd(test_volume))
+  } else if(fit_distribution == "gamma") {
+    # test_volume <- rgamma(36, 9, .5)
+    fit_gamma <- fitdistrplus::fitdist(test_volume, distr = "gamma",
+                                       method = "mle")$estimate
+    random_numbers <- rgamma(random_n, fit_gamma[["shape"]], fit_gamma[["rate"]])
+  } else if(fit_distribution == "poisson") {
+    # test_volume <- rpois(36, 4)
+    fit_poission <- fitdistrplus::fitdist(test_volume, distr = "pois",
+                                          method = "mle")$estimate
+    random_numbers <- rpois(random_n, fit_poission[["lambda"]])
+  }
+  
+  left_prob <- (1 - confidence_interval)/2
+  right_prob <- 1 - left_prob
+  
+  left_right <- quantile(random_numbers, c(left_prob, right_prob))
+  
+  if(left_right[1] < 0) {
+    left_right[1] <- 0
+  }
+  
+  paste(round(left_right[1]), round(center), round(left_right[2]), sep = "-")
 }
 
 predict_trend <- function(dat, test_volume_variable) {
