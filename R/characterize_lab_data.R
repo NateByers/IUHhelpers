@@ -1,31 +1,7 @@
 #' @import forecast trend MASS broom
 #' @export
-characterize_lab_data <- function(lab_data, 
-                                  time_index_column = "time_index",
-                                  test_name_column = "test_name",
-                                  year_column = "year",
-                                  by_column = "month",
-                                  historical_column = "historical",
-                                  variable_column = "variable",
-                                  value_column = "value",
-                                  test_volume_variable = "test_volume") {
-  # lab_data <- read.csv("C:/Users/nbyers1/Documents/Repositories/Lab_Budget/simulate/simulated_lab_data.csv", stringsAsFactors = FALSE)
-  # time_index_column = "time_index"; test_name_column = "test_name"; year_column = "year"; by_column = "month"; historical_column = "historical"; variable_column = "variable"; value_column = "value"; test_volume_variable = "test_volume"
+characterize_lab_data <- function(lab_data, test_volume_variable, points_per_year) {
   
-  points_per_year <- c("day" = 365, "week" = 52, "month" = 12, "year" = 1)[by_column]
-  
-  columns <- c(time_index_column = time_index_column, 
-               test_name_column = test_name_column,
-               year_column = year_column, 
-               by_column = by_column,
-               historical_column = historical_column,
-               variable_column = variable_column, 
-               value_column = value_column)
-  
-  for(i in names(columns)) {
-    current_name <- columns[[i]]
-    names(lab_data)[names(lab_data) == current_name] <- i
-  }
   
   volume_data <- lab_data %>%
     dplyr::filter(variable_column == test_volume_variable) %>%
@@ -36,7 +12,8 @@ characterize_lab_data <- function(lab_data,
   predictor_data <- lab_data %>%
     dplyr::filter(historical_column) %>%
     dplyr::group_by(test_name_column) %>%
-    dplyr::summarise(predictors = check_predictors(value_column, variable_column,
+    dplyr::summarise(predictors = check_predictors(value_column, 
+                                                   variable_column,
                                                    test_volume_variable, 
                                                    time_index_column))
   
@@ -59,39 +36,43 @@ check_seasonality <- function(x, frequency) {
 }
 
 check_predictors <- function(values, variables, test_vol_var, time_index_col) {
-  # values <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(value_column)
-  # variables <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(variable_column)
+  # z <- "e"
+  # values <- lab_data %>% dplyr::filter(test_name_column == z, historical_column) %>% dplyr::pull(value_column)
+  # variables <- lab_data %>% dplyr::filter(test_name_column == z, historical_column) %>% dplyr::pull(variable_column)
   # test_vol_var <- test_volume_variable;
-  # time_index_col <- lab_data %>% dplyr::filter(test_name_column == "a") %>% dplyr::pull(time_index_column)
+  # time_index_col <- lab_data %>% dplyr::filter(test_name_column == z, historical_column) %>% dplyr::pull(time_index_column)
   
   model_data <- data.frame(index = time_index_col, variable = variables, value = values, stringsAsFactors = FALSE) %>%
     tidyr::spread(variable, value) %>%
     dplyr::select(-index)
-  
+
   
   independent_vars <- names(model_data)[names(model_data) != test_vol_var]
-  
+
   lm_formula <- paste(test_vol_var, "~.") %>%
     as.formula()
-  
+
   fit <- lm(lm_formula, data = model_data)
-  
+
   
   upper_formula <- paste(independent_vars, collapse = " + ")
   upper_formula <- paste("~", upper_formula) %>%
     as.formula()
-  
+
   step_fit <- MASS::stepAIC(fit, scope = list(upper = upper_formula), 
                             trace = FALSE)
+
   predictors <- broom::tidy(step_fit) %>%
     dplyr::filter(term != "(Intercept)") %>%
     dplyr::pull(term) %>%
     paste(collapse = "|") %>%
     trimws()
+
   
   if(!grepl("\\S", predictors)) {
-    predictors <- NA
+    predictors <- NA_character_
   }
+
   
   predictors
 }
