@@ -42,37 +42,43 @@ predict_lab_tests <- function(lab_data,
 }
 
 predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
-  # dat <- lab_data %>% dplyr::filter(test_name_column == "d")
+  # dat <- lab_data %>% dplyr::filter(test_name_column == "c")
   
   trend <- unique(dat[["trend"]])
   seasonal <- unique(dat[["seasonal"]])
   predictors <- unique(dat[["predictors"]])
   
   if(!trend & !seasonal & is.na(predictors)) {
-    predict_random(dat, test_volume_variable, points_per_year)
+    future_data <- predict_random(dat, test_volume_variable, points_per_year)
   }
   else if(trend & !seasonal & is.na(predictors)) {
-    predict_trend(dat, test_volume_variable, points_per_year)
+    future_data <- predict_trend(dat, test_volume_variable, points_per_year)
   }
   else if(trend & seasonal & is.na(predictors)) {
-    predict_trend_seasonal(dat, test_volume_variable, points_per_year)
+    future_data <- predict_trend_seasonal(dat, test_volume_variable, points_per_year)
   }
   else if(trend & !seasonal & !is.na(predictors)) {
-    predict_trend_predictors(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_trend_predictors(dat, test_volume_variable, points_per_year, predictors)
   }
   else if(trend & seasonal & !is.na(predictors)) {
-    predict_trend_seasonal_predictors(dat, test_volume_variable, points_per_year,
+    future_data <- predict_trend_seasonal_predictors(dat, test_volume_variable, points_per_year,
                                       predictors)
   }
   else if(!trend & seasonal & is.na(predictors)) {
-    predict_seasonal(dat, test_volume_variable, points_per_year)
+    future_data <- predict_seasonal(dat, test_volume_variable, points_per_year)
   }
   else if(!trend & seasonal & !is.na(predictors)) {
-    predict_seasonal(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_seasonal_predictors(dat, test_volume_variable, points_per_year, predictors)
   }
   else if(!trend & !seasonal & !is.na(predictors)) {
-    predict_seasonal(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_predictors(dat, test_volume_variable, points_per_year, predictors)
   }
+  
+  dat <- dat %>%
+    add_prediction(future_data) %>%
+    dplyr::mutate(value_column = round(value_column))
+  
+  dat
 }
 
 predict_random <- function(dat, test_volume_variable, points_per_year) {
@@ -128,12 +134,39 @@ predict_random <- function(dat, test_volume_variable, points_per_year) {
                             variable_column = test_volume_variable,
                             ci_left, center, ci_right, stringsAsFactors = FALSE)
   
-  dat <- dat %>%
-    add_prediction(future_data)
+  future_data
 }
 
 predict_trend <- function(dat, test_volume_variable, points_per_year) {
   
+  test_volume_df <- dat %>%
+    dplyr::filter(variable_column == test_volume_variable) 
+  
+  trend_line <- lm(value_column ~ time_index_column, 
+                   data = test_volume_df)$fitted.values 
+  
+  trend_line <- trend_line - round(median(trend_line))
+  
+  # plot(test_volume_df$time_index_column, test_volume_df$value_column)
+  # points(test_volume_df$time_index_column, trend_line$fitted.values,
+  #        pch = 20)
+  
+  dat <- dat %>%
+    dplyr::mutate(value_column = ifelse(variable_column == test_volume_variable, 
+                                        value_column - trend_line, 
+                                        value_column))
+ 
+  future_data <- dat %>%
+    predict_random(test_volume_variable, points_per_year) 
+  
+  steps <- diff(trend_line)[1]*1:nrow(future_data) + tail(trend_line, 1)
+  
+  future_data <- future_data %>%
+    dplyr::mutate(ci_left = ci_left + steps,
+                  center = center + steps,
+                  ci_right = ci_right + steps)
+
+  future_data
 }
 
 predict_trend_seasonal <- function(dat, test_volume_variable, points_per_year) {
@@ -154,13 +187,13 @@ predict_seasonal <- function(dat, test_volume_variable, points_per_year) {
   
 }
 
-predict_seasonal <- function(dat, test_volume_variable, points_per_year,
-                             predictors) {
+predict_seasonal_predictors <- function(dat, test_volume_variable, points_per_year,
+                                        predictors) {
   
 }
 
-predict_seasonal <- function(dat, test_volume_variable, points_per_year,
-                             predictors) {
+predict_predictors <- function(dat, test_volume_variable, points_per_year,
+                               predictors) {
   
 }
 
