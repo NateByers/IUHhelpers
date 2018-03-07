@@ -42,11 +42,10 @@ predict_lab_tests <- function(lab_data,
 }
 
 predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
-  # dat <- lab_data %>% dplyr::filter(test_name_column == "c")
+  # dat <- lab_data %>% dplyr::filter(test_name_column == "l")
   
   trend <- unique(dat[["trend"]])
   seasonal <- unique(dat[["seasonal"]])
-  predictors <- unique(dat[["predictors"]])
   
   if(!trend & !seasonal & is.na(predictors)) {
     future_data <- predict_random(dat, test_volume_variable, points_per_year)
@@ -58,20 +57,21 @@ predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
     future_data <- predict_trend_seasonal(dat, test_volume_variable, points_per_year)
   }
   else if(trend & !seasonal & !is.na(predictors)) {
-    future_data <- predict_trend_predictors(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_trend_predictors(dat, test_volume_variable, points_per_year)
   }
   else if(trend & seasonal & !is.na(predictors)) {
-    future_data <- predict_trend_seasonal_predictors(dat, test_volume_variable, points_per_year,
-                                      predictors)
+    future_data <- predict_trend_seasonal_predictors(dat, test_volume_variable, 
+                                                     points_per_year)
   }
   else if(!trend & seasonal & is.na(predictors)) {
     future_data <- predict_seasonal(dat, test_volume_variable, points_per_year)
   }
   else if(!trend & seasonal & !is.na(predictors)) {
-    future_data <- predict_seasonal_predictors(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_seasonal_predictors(dat, test_volume_variable, 
+                                               points_per_year)
   }
   else if(!trend & !seasonal & !is.na(predictors)) {
-    future_data <- predict_predictors(dat, test_volume_variable, points_per_year, predictors)
+    future_data <- predict_predictors(dat, test_volume_variable, points_per_year)
   }
   
   dat <- dat %>%
@@ -119,11 +119,12 @@ predict_random <- function(dat, test_volume_variable, points_per_year) {
     left_right[1] <- 0
   }
   
-  ci_left <- rep(left_right[1]/points_per_year, points_per_year)
-  ci_right <- rep(left_right[2]/points_per_year, points_per_year)
+  ci_lower <- rep(left_right[1]/points_per_year, points_per_year)
+  ci_upper <- rep(left_right[2]/points_per_year, points_per_year)
   center <- rep(center/points_per_year, points_per_year)
   
   future_year <- dat %>%
+    dplyr::filter(historical_column) %>%
     dplyr::select(year_column) %>%
     dplyr::distinct() %>%
     dplyr::filter(year_column == max(year_column)) %>%
@@ -132,7 +133,7 @@ predict_random <- function(dat, test_volume_variable, points_per_year) {
   future_data <- data.frame(year_column = rep(future_year, points_per_year),
                             by_column = 1:points_per_year,
                             variable_column = test_volume_variable,
-                            ci_left, center, ci_right, stringsAsFactors = FALSE)
+                            ci_lower, center, ci_upper, stringsAsFactors = FALSE)
   
   future_data
 }
@@ -162,38 +163,124 @@ predict_trend <- function(dat, test_volume_variable, points_per_year) {
   steps <- diff(trend_line)[1]*1:nrow(future_data) + tail(trend_line, 1)
   
   future_data <- future_data %>%
-    dplyr::mutate(ci_left = ci_left + steps,
+    dplyr::mutate(ci_lower = ci_lower + steps,
                   center = center + steps,
-                  ci_right = ci_right + steps)
+                  ci_upper = ci_upper + steps)
 
   future_data
 }
 
 predict_trend_seasonal <- function(dat, test_volume_variable, points_per_year) {
   
+ 
 }
 
-predict_trend_predictors <- function(dat, test_volume_variable, points_per_year, 
-                                     predictors) {
+predict_trend_predictors <- function(dat, test_volume_variable, points_per_year) {
   
 }
 
 predict_trend_seasonal_predictors <- function(dat, test_volume_variable, 
-                                              points_per_year, predictors) {
+                                              points_per_year) {
   
 }
 
 predict_seasonal <- function(dat, test_volume_variable, points_per_year) {
   
-}
-
-predict_seasonal_predictors <- function(dat, test_volume_variable, points_per_year,
-                                        predictors) {
+  
   
 }
 
-predict_predictors <- function(dat, test_volume_variable, points_per_year,
-                               predictors) {
+predict_seasonal_predictors <- function(dat, test_volume_variable, 
+                                        points_per_year) {
+  
+}
+
+predict_predictors <- function(dat, test_volume_variable, points_per_year) {
+  
+  historical_data <- dat %>%
+    dplyr::filter(historical_column) %>%
+    dplyr::select(time_index_column, variable_column, value_column) %>%
+    tidyr::spread(variable_column, value_column)
+  
+  independent_vars <- strsplit(unique(dat[["predictors"]]), "\\|")[[1]]
+  independent_vars <- paste(independent_vars, collapse = " + ")
+  
+  lm_formula <- paste(test_volume_variable, independent_vars, sep = " ~ ") %>%
+    as.formula()
+  
+  fit <- lm(lm_formula, historical_data)
+  
+  future_data <- dat %>%
+    dplyr::filter(!historical_column) %>%
+    dplyr::select(time_index_column, variable_column, value_column) %>%
+    tidyr::spread(variable_column, value_column)
+  
+  predicted <- predict(fit, future_data, level = confidence_interval,
+                       interval = "predict")
+  
+  predicted[predicted < 0] <- 0
+  
+  future_year <- dat %>%
+    dplyr::filter(historical_column) %>%
+    dplyr::select(year_column) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(year_column == max(year_column)) %>%
+    dplyr::pull(year_column) + 1
+  
+  future_data <- data.frame(year_column = rep(future_year, points_per_year),
+                            by_column = 1:points_per_year,
+                            variable_column = test_volume_variable,
+                            ci_lower = predicted[, 2],
+                            center = predicted[, 1], 
+                            ci_upper = predicted[, 3],
+                            stringsAsFactors = FALSE)
+  
+  future_data
+    
+}
+
+predict_with_forecast <- function(dat, test_volume_variable, points_per_year,
+                                  predictors = c(TRUE, FALSE)) {
+  
+  test_volume <- dat %>%
+    dplyr::filter(variable_column == test_volume_variable) %>%
+    dplyr::pull(value_column)
+  
+  years <- dat %>%
+    dplyr::filter(historical_column) %>%
+    dplyr::select(year_column) %>%
+    dplyr::distinct() %>%
+    nrow()
+  
+  test_volume <- ts(test_volume, end = years*points_per_year, 
+                    frequency = points_per_year)
+  
+  fit <- forecast::stlm(test_volume, method = "arima", 
+                        allow.multiplicative.trend = TRUE)
+  
+  fit_forecast <- forecast::forecast(fit, h = points_per_year,
+                                     level = confidence_interval*100)
+  
+  autoplot(fit_forecast)
+  
+  ci_lower <- fit_forecast$lower %>% as.vector()
+  ci_lower[ci_lower < 0] <- 0
+  ci_upper <- fit_forecast$upper %>% as.vector()
+  center <- fit_forecast$mean %>% as.vector()
+  
+  future_year <- dat %>%
+    dplyr::filter(historical_column) %>%
+    dplyr::select(year_column) %>%
+    dplyr::distinct() %>%
+    dplyr::filter(year_column == max(year_column)) %>%
+    dplyr::pull(year_column) + 1
+  
+  future_data <- data.frame(year_column = rep(future_year, points_per_year),
+                            by_column = 1:points_per_year,
+                            variable_column = test_volume_variable,
+                            ci_lower, center, ci_upper, stringsAsFactors = FALSE)
+  
+  future_data
   
 }
 
@@ -218,7 +305,7 @@ add_prediction <- function(dat, future_data) {
   future_data[["predictors"]] <- rep(unique(dat$seasonal), nrow(future_data))
   
   future_data <- future_data %>%
-    tidyr::gather(location, value_column, ci_left:ci_right) %>%
+    tidyr::gather(location, value_column, ci_lower:ci_upper) %>%
     dplyr::select_at(names(dat))
   
   rbind(dat, future_data)
