@@ -166,6 +166,8 @@ predict_seasonal <- function(dat, test_volume_variable, points_per_year,
 
 add_prediction <- function(dat, future_data) {
   
+  dat[["location"]] <- "point"
+  
   last_historical_index <- dat %>%
     dplyr::filter(historical_column) %>%
     dplyr::summarize(index = max(time_index_column)) %>%
@@ -183,6 +185,8 @@ add_prediction <- function(dat, future_data) {
   future_data[["predictors"]] <- rep(unique(dat$seasonal), nrow(future_data))
   
   future_data <- future_data %>%
-    tidyr::gather(variable_column, value_column, ci_left:ci_right) %>%
+    tidyr::gather(location, value_column, ci_left:ci_right) %>%
     dplyr::select_at(names(dat))
+  
+  rbind(dat, future_data)
 }
