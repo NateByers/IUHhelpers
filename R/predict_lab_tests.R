@@ -41,6 +41,7 @@ predict_lab_tests <- function(lab_data,
     purrr::map(predict_lab_test, test_volume_variable, points_per_year)
 }
 
+
 predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
   # dat <- lab_data %>% dplyr::filter(test_name_column == "l")
   
@@ -54,24 +55,28 @@ predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
     future_data <- predict_trend(dat, test_volume_variable, points_per_year)
   }
   else if(trend & seasonal & is.na(predictors)) {
-    future_data <- predict_trend_seasonal(dat, test_volume_variable, points_per_year)
+    future_data <- predict_with_forecast(dat, test_volume_variable, points_per_year,
+                            use_predictors = FALSE)
   }
   else if(trend & !seasonal & !is.na(predictors)) {
-    future_data <- predict_trend_predictors(dat, test_volume_variable, points_per_year)
+    future_data <- predict_predictors(dat, test_volume_variable, points_per_year, 
+                         use_trend = FALSE)
   }
   else if(trend & seasonal & !is.na(predictors)) {
-    future_data <- predict_trend_seasonal_predictors(dat, test_volume_variable, 
-                                                     points_per_year)
+    future_data <- predict_with_forecast(dat, test_volume_variable, points_per_year,
+                            use_predictors = TRUE)
   }
   else if(!trend & seasonal & is.na(predictors)) {
-    future_data <- predict_seasonal(dat, test_volume_variable, points_per_year)
+    future_data <- predict_with_forecast(dat, test_volume_variable, points_per_year,
+                            use_predictors = FALSE)
   }
   else if(!trend & seasonal & !is.na(predictors)) {
-    future_data <- predict_seasonal_predictors(dat, test_volume_variable, 
-                                               points_per_year)
+    future_data <- predict_with_forecast(dat, test_volume_variable, points_per_year,
+                            use_predictors = TRUE)
   }
   else if(!trend & !seasonal & !is.na(predictors)) {
-    future_data <- predict_predictors(dat, test_volume_variable, points_per_year)
+    future_data <- predict_predictors(dat, test_volume_variable, points_per_year,
+                                      use_trend = FALSE)
   }
   
   dat <- dat %>%
@@ -80,6 +85,7 @@ predict_lab_test <- function(dat, test_volume_variable, points_per_year) {
   
   dat
 }
+
 
 predict_random <- function(dat, test_volume_variable, points_per_year) {
   test_volume <- dat %>%
@@ -138,6 +144,7 @@ predict_random <- function(dat, test_volume_variable, points_per_year) {
   future_data
 }
 
+
 predict_trend <- function(dat, test_volume_variable, points_per_year) {
   
   test_volume_df <- dat %>%
@@ -170,32 +177,9 @@ predict_trend <- function(dat, test_volume_variable, points_per_year) {
   future_data
 }
 
-predict_trend_seasonal <- function(dat, test_volume_variable, points_per_year) {
-  
- 
-}
 
-predict_trend_predictors <- function(dat, test_volume_variable, points_per_year) {
-  
-}
-
-predict_trend_seasonal_predictors <- function(dat, test_volume_variable, 
-                                              points_per_year) {
-  
-}
-
-predict_seasonal <- function(dat, test_volume_variable, points_per_year) {
-  
-  
-  
-}
-
-predict_seasonal_predictors <- function(dat, test_volume_variable, 
-                                        points_per_year) {
-  
-}
-
-predict_predictors <- function(dat, test_volume_variable, points_per_year) {
+predict_predictors <- function(dat, test_volume_variable, points_per_year,
+                               use_trend = c(TRUE, FALSE)) {
   
   historical_data <- dat %>%
     dplyr::filter(historical_column) %>%
@@ -203,6 +187,11 @@ predict_predictors <- function(dat, test_volume_variable, points_per_year) {
     tidyr::spread(variable_column, value_column)
   
   independent_vars <- strsplit(unique(dat[["predictors"]]), "\\|")[[1]]
+  
+  if(use_trend) {
+    indepdendent_vars <- c(independent_vars, "time_index_column")
+  }
+  
   independent_vars <- paste(independent_vars, collapse = " + ")
   
   lm_formula <- paste(test_volume_variable, independent_vars, sep = " ~ ") %>%
@@ -239,8 +228,9 @@ predict_predictors <- function(dat, test_volume_variable, points_per_year) {
     
 }
 
+
 predict_with_forecast <- function(dat, test_volume_variable, points_per_year,
-                                  predictors = c(TRUE, FALSE)) {
+                                  use_predictors = c(TRUE, FALSE)) {
   
   test_volume <- dat %>%
     dplyr::filter(variable_column == test_volume_variable) %>%
@@ -255,13 +245,38 @@ predict_with_forecast <- function(dat, test_volume_variable, points_per_year,
   test_volume <- ts(test_volume, end = years*points_per_year, 
                     frequency = points_per_year)
   
-  fit <- forecast::stlm(test_volume, method = "arima", 
-                        allow.multiplicative.trend = TRUE)
-  
-  fit_forecast <- forecast::forecast(fit, h = points_per_year,
-                                     level = confidence_interval*100)
-  
-  autoplot(fit_forecast)
+  if(use_predictors) {
+    independent_vars <- strsplit(unique(dat[["predictors"]]), "\\|")[[1]]
+    
+    xreg <- dat %>%
+      dplyr::filter(variable_column %in% independent_vars) %>%
+      dplyr::select(time_index_column, historical_column, variable_column,
+                    value_column) %>%
+      tidyr::spread(variable_column, value_column)
+    
+    historical_xreg <- xreg %>%
+      dplyr::filter(historical_column) %>%
+      dplyr::select(-time_index_column, -historical_column)
+    
+    future_xreg <- xreg %>%
+      dplyr::filter(!historical_column) %>%
+      dplyr::select(-time_index_column, -historical_column)
+    
+    fit <- forecast::stlm(test_volume, method = "arima", 
+                          allow.multiplicative.trend = TRUE,
+                          xreg = historical_xreg)
+    
+    fit_forecast <- forecast::forecast(fit, h = points_per_year,
+                                       level = confidence_interval*100,
+                                       newxreg = futre_xreg)
+  } else {
+    fit <- forecast::stlm(test_volume, method = "arima", 
+                          allow.multiplicative.trend = TRUE)
+    
+    fit_forecast <- forecast::forecast(fit, h = points_per_year,
+                                       level = confidence_interval*100)
+  }
+  # autoplot(fit_forecast)
   
   ci_lower <- fit_forecast$lower %>% as.vector()
   ci_lower[ci_lower < 0] <- 0
@@ -283,6 +298,7 @@ predict_with_forecast <- function(dat, test_volume_variable, points_per_year,
   future_data
   
 }
+
 
 add_prediction <- function(dat, future_data) {
   
