@@ -13,7 +13,8 @@ match_MRNs <- function(x, y){
   
   if(sum(column_names %in% x_names) != length(column_names) |
      sum(column_names %in% x_names) != length(column_names)) {
-    stop("must have the following column names in both data frames")
+    stop(paste("must have the following column names in both data frames:",
+               paste(column_names, collapse = ", ")))
   }
   
   names(x) <- x_names
