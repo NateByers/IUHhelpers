@@ -1,9 +1,3 @@
----
-title: ''
-output: 
-  html_document: 
-    keep_md: yes
----
 
 
 [![Build Status](https://travis-ci.org/NateByers/IUHhelpers.svg?branch=master)](https://travis-ci.org/NateByers/IUHhelpers)
