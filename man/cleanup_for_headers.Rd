@@ -6,6 +6,14 @@
 \usage{
 cleanup_for_headers(x)
 }
+\arguments{
+\item{x}{Character vector of column names}
+}
 \description{
 Transform vector into strings that can be headers in a data.frame
+}
+\examples{
+column_names <- c("MRN ID", "First & Middle Name", "Name: Last")
+
+cleanup_for_headers(column_names)
 }

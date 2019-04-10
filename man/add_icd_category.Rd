@@ -25,3 +25,8 @@ can see this data frame by running \code{data(icd_lookup)}.}
 \description{
 Add a column of ICD categories to a data.frame
 }
+\examples{
+x <- data.frame(icd = c("43852", "M93929", "W002XXA"))
+
+add_icd_category(icd = x, icd_column = "icd")
+}

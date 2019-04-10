@@ -8,6 +8,10 @@
 #'                          can see this data frame by running \code{data(icd_lookup)}.
 #' @param parallel Use parallel processing?
 #' @param cluster_num Number of clusters to use if \code{parallel} is TRUE.
+#' @examples 
+#' x <- data.frame(icd = c("43852", "M93929", "W002XXA"))
+#' 
+#' add_icd_category(icd = x, icd_column = "icd")
 add_icd_category <- function(icd, icd_column, icd_type = c("diagnosis", "procedure"),
                              icd_lookup_column = "global_short_description",
                              parallel = FALSE,

@@ -1,5 +1,10 @@
 #' Transform vector into strings that can be headers in a data.frame
 #' @export
+#' @param x Character vector of column names
+#' @examples 
+#' column_names <- c("MRN ID", "First & Middle Name", "Name: Last")
+#' 
+#' cleanup_for_headers(column_names)
 cleanup_for_headers <- function(x) {
 
   x <- trimws(x)
