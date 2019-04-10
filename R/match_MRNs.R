@@ -1,9 +1,22 @@
 #' Match MRNs from two EMRs
 #' 
+#' Takes two data.frame objects with patient information and matches them
+#' 
 #' @import stringdist
 #' @export
-#' @param x,y Two data frames with `MRN`, `first_name`, `last_name`, and 
-#' `birth_date` columns
+#' @param x,y Two data frames with columns `mrn`, `first_name`, `last_name`, and 
+#' `birth_date` (yyyy-mm-dd)
+#' @return A data.frame with column names with suffixes '_x' and '_y' corresponding
+#' to the x and y inputs. The dist column gives the string distance between the 
+#' two first names.
+#' @details The function cleans up the last names slightly and then matches exactly
+#' on the cleaned up last names and the birth dates. Then fuzzy matching is done
+#' on the first name, using the \code{stringdist} package.
+#' @examples 
+#' data(y_mrn)
+#' data(x_mrn)
+#' 
+#' match_MRNs(x_mrn, y_mrn)
 match_MRNs <- function(x, y){
   
   column_names <- c("mrn", "first_name", "last_name", "birth_date")
