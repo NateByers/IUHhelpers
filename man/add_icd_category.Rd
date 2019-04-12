@@ -13,7 +13,7 @@ add_icd_category(icd, icd_column, icd_type = c("diagnosis", "procedure"),
 
 \item{icd_column}{The name of the column of ICD codes.}
 
-\item{icd_type}{Are these disease or diagnosis codes.}
+\item{icd_type}{Are these diagnosis or procedure codes (diagnosis default).}
 
 \item{icd_lookup_column}{Which column from \code{icd_lookup} should be returned. You
 can see this data frame by running \code{data(icd_lookup)}.}

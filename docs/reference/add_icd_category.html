@@ -143,7 +143,7 @@ can see this data frame by running <code><a href='https://www.rdocumentation.org
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>icd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"43852"</span>, <span class='st'>"M93929"</span>, <span class='st'>"W002XXA"</span>))
 
-<span class='fu'>add_icd_category</span>(<span class='kw'>icd</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>icd_column</span> <span class='kw'>=</span> <span class='st'>"icd"</span>)</div><div class='output co'>#&gt;       icd global_short_description
+<span class='fu'>add_icd_category</span>(<span class='kw'>icd</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>icd_column</span> <span class='kw'>=</span> <span class='st'>"icd"</span>)</div><div class='output co'>#&gt; <span class='warning'>Warning: package 'bindrcpp' was built under R version 3.5.3</span></div><div class='output co'>#&gt;       icd global_short_description
 #&gt; 1   43852             Late eff CVD
 #&gt; 2  M93929               Ot bone dx
 #&gt; 3 W002XXA            E Codes: Fall</div></pre>
