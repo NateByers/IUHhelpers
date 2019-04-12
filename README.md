@@ -1,3 +1,9 @@
+---
+title: ''
+output: 
+  html_document: 
+    keep_md: yes
+---
 
 
 [![Build Status](https://travis-ci.org/NateByers/IUHhelpers.svg?branch=master)](https://travis-ci.org/NateByers/IUHhelpers)
@@ -14,5 +20,5 @@ Install from GitHub using `devtools`.
 if(!require(devtools)) {
   install.packages("devtools")
 }
-devtools::install_github("NateByers/SCShelpers")
+devtools::install_github("NateByers/IUHhelpers")
 ```
