@@ -1,5 +1,6 @@
 #' Find highly correlated groups for dimension reduction
-#' @import dplyr igraph
+#' @import dplyr
+#' @importFrom igraph graph.data.frame clusters
 #' @export
 #' @param data A data.frame or matrix of features for modeling
 #' @param cutoff Minimum correlation used to make groups

@@ -3,7 +3,7 @@
 #' @import parallel
 #' @param icd A data.frame with ICD 9 or 10 diagnoses.
 #' @param icd_column The name of the column of ICD codes.
-#' @param icd_type Are these disease or diagnosis codes.
+#' @param icd_type Are these diagnosis or procedure codes (diagnosis default).
 #' @param icd_lookup_column Which column from \code{icd_lookup} should be returned. You
 #'                          can see this data frame by running \code{data(icd_lookup)}.
 #' @param parallel Use parallel processing?
