@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/NateByers/IUHhelpers.svg?branch=master)](https://travis-ci.org/NateByers/IUHhelpers)
 [![codecov.io](http://codecov.io/github/NateByers/IUHhelpers/coverage.svg?branch=master)](http://codecov.io/github/NateByers/IUHhelpers?branch=master)
 
-Helper functions for doing data analysis at  IU Health.
+Convenience functions for using R at  IU Health.
 
 ## Installation
 

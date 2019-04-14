@@ -2,7 +2,7 @@
 #' 
 #' Takes two data.frame objects with patient information and matches them
 #' 
-#' @import stringdist
+#' @importFrom stringdist stringdist
 #' @export
 #' @param x,y Two data frames with columns `mrn`, `first_name`, `last_name`, and 
 #' `birth_date` (yyyy-mm-dd)
