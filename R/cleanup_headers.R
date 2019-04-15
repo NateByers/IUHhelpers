@@ -4,8 +4,8 @@
 #' @examples 
 #' column_names <- c("MRN ID", "First & Middle Name", "Name: Last")
 #' 
-#' cleanup_for_headers(column_names)
-cleanup_for_headers <- function(x) {
+#' cleanup_headers(column_names)
+cleanup_headers <- function(x) {
 
   x <- trimws(x)
   x <- gsub("&", "and", x)

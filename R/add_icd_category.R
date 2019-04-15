@@ -1,6 +1,6 @@
 #' Add a column of ICD categories to a data.frame
 #' @export
-#' @importFrom dplyr %>% mutate select select_at distinct filter inner_join left_join arrange 
+#' @importFrom dplyr %>% mutate select select_at distinct filter inner_join left_join arrange row_number 
 #' @importFrom parallel makeCluster parSapply stopCluster
 #' @param icd A data.frame with ICD 9 or 10 diagnoses.
 #' @param icd_column The name of the column of ICD codes.

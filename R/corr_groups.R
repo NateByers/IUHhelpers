@@ -5,9 +5,9 @@
 #' @param cutoff Minimum correlation used to make groups
 #' @param cor_mat If TRUE, a list of correlation matrices are returned
 #' @examples
-#' find_corr_groups(mtcars)
-#' find_corr_groups(mtcars, cor_mat = TRUE)
-find_corr_groups <- function(data, cutoff = .9, cor_mat = FALSE) {
+#' corr_groups(mtcars)
+#' corr_groups(mtcars, cor_mat = TRUE)
+corr_groups <- function(data, cutoff = .9, cor_mat = FALSE) {
   corr <- cor(data, use = "na.or.complete")
   corr <- corr*lower.tri(corr)
   check_corr <- which(corr >= cutoff, arr.ind = TRUE)
