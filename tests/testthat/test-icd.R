@@ -3,7 +3,6 @@ context("ICD codes properly added")
 data("icd_lookup")
 
 
-
 test_that("description is added", {
   x <- data.frame(icd = c("43852", "M93929", "W002XXA")) %>%
     add_icd_category(icd_column = "icd")
