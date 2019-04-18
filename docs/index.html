@@ -90,7 +90,6 @@
 <a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(y_EMR)</a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"> </a>
 <a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="reference/match_MRNs.html">match_MRNs</a></span>(x_EMR, y_EMR)</a></code></pre></div>
-<pre><code>## Warning: package 'bindrcpp' was built under R version 3.5.3</code></pre>
 <pre><code>##   mrn_x first_name_x last_name_x birth_date_x mrn_y first_name_y
 ## 1    11        James       Brown   1978-01-01    21        James
 ## 2    12      Charlie      Manson   1952-05-15    22      Charles
@@ -108,16 +107,16 @@
 <h2 class="hasAnchor">
 <a href="#correlated-variables" class="anchor"></a>Correlated variables</h2>
 <p>Find groups of correlated variables.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars)</a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars)</a></code></pre></div>
 <pre><code>## $`1`
 ## [1] "disp" "cyl"</code></pre>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>)</a></code></pre></div>
 <pre><code>## $`1`
 ## [1] "disp" "hp"   "wt"   "cyl" 
 ## 
 ## $`2`
 ## [1] "gear" "am"</code></pre>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>, <span class="dt">cor_mat =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>, <span class="dt">cor_mat =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## $`1`
 ##           disp        hp        wt       cyl
 ## disp 1.0000000 0.7909486 0.8879799 0.9020329
@@ -134,9 +133,9 @@
 <h2 class="hasAnchor">
 <a href="#icd-categories" class="anchor"></a>ICD categories</h2>
 <p>Add a column of categories to a data.frame of ICD codes</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">icd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"43852"</span>, <span class="st">"M93929"</span>, <span class="st">"W002XXA"</span>))</a>
-<a class="sourceLine" id="cb11-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw"><a href="reference/add_icd_category.html">add_icd_category</a></span>(<span class="dt">icd =</span> x, <span class="dt">icd_column =</span> <span class="st">"icd"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">icd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"43852"</span>, <span class="st">"M93929"</span>, <span class="st">"W002XXA"</span>))</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw"><a href="reference/add_icd_category.html">add_icd_category</a></span>(<span class="dt">icd =</span> x, <span class="dt">icd_column =</span> <span class="st">"icd"</span>)</a></code></pre></div>
 <pre><code>##       icd global_short_description
 ## 1   43852             Late eff CVD
 ## 2  M93929               Ot bone dx
@@ -146,9 +145,9 @@
 <h2 class="hasAnchor">
 <a href="#cleanup-headers" class="anchor"></a>Cleanup headers</h2>
 <p>Transform column names to work nicely as data.frame headers.</p>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MRN ID"</span>, <span class="st">"First &amp; Middle Name"</span>, <span class="st">"Name: Last"</span>)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw"><a href="reference/cleanup_headers.html">cleanup_headers</a></span>(column_names)</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MRN ID"</span>, <span class="st">"First &amp; Middle Name"</span>, <span class="st">"Name: Last"</span>)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="kw"><a href="reference/cleanup_headers.html">cleanup_headers</a></span>(column_names)</a></code></pre></div>
 <pre><code>## [1] "MRN_ID"                "First_and_Middle_Name" "Name_Last"</code></pre>
 </div>
   </div>
