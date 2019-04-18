@@ -13,10 +13,10 @@
 #' on the cleaned up last names and the birth dates. Then fuzzy matching is done
 #' on the first name, using the \code{stringdist} package.
 #' @examples 
-#' data(y_mrn)
-#' data(x_mrn)
+#' data(x_EMR)
+#' data(y_EMR)
 #' 
-#' match_MRNs(x_mrn, y_mrn)
+#' match_MRNs(x_EMR, y_EMR)
 match_MRNs <- function(x, y){
   
   column_names <- c("mrn", "first_name", "last_name", "birth_date")

@@ -47,7 +47,14 @@
   <a href="reference/index.html">Reference</a>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/NateByers/IUHhelpers">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -71,12 +78,90 @@
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="cf">if</span>(<span class="op">!</span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">require</a></span>(devtools)) {</a>
 <a class="sourceLine" id="cb1-2" data-line-number="2">  <span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/install.packages">install.packages</a></span>(<span class="st">"devtools"</span>)</a>
 <a class="sourceLine" id="cb1-3" data-line-number="3">}</a>
-<a class="sourceLine" id="cb1-4" data-line-number="4">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"NateByers/IUHhelpers"</span>)</a></code></pre></div>
+<a class="sourceLine" id="cb1-4" data-line-number="4">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"NateByers/IUHhelpers"</span>)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(IUHhelpers)</a></code></pre></div>
+</div>
+<div id="match-mrns" class="section level2">
+<h2 class="hasAnchor">
+<a href="#match-mrns" class="anchor"></a>Match MRNs</h2>
+<p>Match people from two different EMRs.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(x_EMR)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(y_EMR)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"> </a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="kw"><a href="reference/match_MRNs.html">match_MRNs</a></span>(x_EMR, y_EMR)</a></code></pre></div>
+<pre><code>## Warning: package 'bindrcpp' was built under R version 3.5.3</code></pre>
+<pre><code>##   mrn_x first_name_x last_name_x birth_date_x mrn_y first_name_y
+## 1    11        James       Brown   1978-01-01    21        James
+## 2    12      Charlie      Manson   1952-05-15    22      Charles
+## 3    14         Gary      Oldman   1960-12-15    24         Gary
+## 4    15        Steve       Brown   1980-01-01    25      Stephen
+## 5    17         Phil      Bowers   1980-01-01    27       Philip
+##   last_name_y birth_date_y dist
+## 1       Brown   1978-01-01    0
+## 2      Manson   1952-05-15    2
+## 3     Old-man   1960-12-15    0
+## 4       Brown   1980-01-01    3
+## 5   Bowers Jr   1980-01-01    2</code></pre>
+</div>
+<div id="correlated-variables" class="section level2">
+<h2 class="hasAnchor">
+<a href="#correlated-variables" class="anchor"></a>Correlated variables</h2>
+<p>Find groups of correlated variables.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars)</a></code></pre></div>
+<pre><code>## $`1`
+## [1] "disp" "cyl"</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>)</a></code></pre></div>
+<pre><code>## $`1`
+## [1] "disp" "hp"   "wt"   "cyl" 
+## 
+## $`2`
+## [1] "gear" "am"</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>, <span class="dt">cor_mat =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<pre><code>## $`1`
+##           disp        hp        wt       cyl
+## disp 1.0000000 0.7909486 0.8879799 0.9020329
+## hp   0.7909486 1.0000000 0.6587479 0.8324475
+## wt   0.8879799 0.6587479 1.0000000 0.7824958
+## cyl  0.9020329 0.8324475 0.7824958 1.0000000
+## 
+## $`2`
+##           gear        am
+## gear 1.0000000 0.7940588
+## am   0.7940588 1.0000000</code></pre>
+</div>
+<div id="icd-categories" class="section level2">
+<h2 class="hasAnchor">
+<a href="#icd-categories" class="anchor"></a>ICD categories</h2>
+<p>Add a column of categories to a data.frame of ICD codes</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">icd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"43852"</span>, <span class="st">"M93929"</span>, <span class="st">"W002XXA"</span>))</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw"><a href="reference/add_icd_category.html">add_icd_category</a></span>(<span class="dt">icd =</span> x, <span class="dt">icd_column =</span> <span class="st">"icd"</span>)</a></code></pre></div>
+<pre><code>##       icd global_short_description
+## 1   43852             Late eff CVD
+## 2  M93929               Ot bone dx
+## 3 W002XXA            E Codes: Fall</code></pre>
+</div>
+<div id="cleanup-headers" class="section level2">
+<h2 class="hasAnchor">
+<a href="#cleanup-headers" class="anchor"></a>Cleanup headers</h2>
+<p>Transform column names to work nicely as data.frame headers.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MRN ID"</span>, <span class="st">"First &amp; Middle Name"</span>, <span class="st">"Name: Last"</span>)</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="kw"><a href="reference/cleanup_headers.html">cleanup_headers</a></span>(column_names)</a></code></pre></div>
+<pre><code>## [1] "MRN_ID"                "First_and_Middle_Name" "Name_Last"</code></pre>
 </div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
-    <div class="license">
+    <div class="links">
+<h2>Links</h2>
+<ul class="list-unstyled">
+<li>Browse source code at <br><a href="https://github.com/NateByers/IUHhelpers">https://​github.com/​NateByers/​IUHhelpers</a>
+</li>
+</ul>
+</div>
+<div class="license">
 <h2>License</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.r-project.org/Licenses/GPL-3">GPL-3</a></li>
