@@ -3,7 +3,8 @@ Type: Package
 Title: Convenience functions for IU Health
 Version: 0.1.0
 Authors@R: c(
-    person("Nathan", "Byers", email = "nbyers1@iuhealth.org", role = c("aut", "cre")
+    person("Nathan", "Byers", email = "nbyers1@iuhealth.org", 
+    role = c("aut", "cre"), comment = c(ORCID = "0000-0001-6591-3749")
     ))
 Description: Package for miscellaneous functions that are useful for working with
     IU Health data.
