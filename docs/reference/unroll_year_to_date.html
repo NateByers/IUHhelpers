@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Add a column of ICD categories to a data.frame — add_icd_category • IUHhelpers</title>
+<title>Recover original series from a vector of year-to-date averages — unroll_year_to_date • IUHhelpers</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Add a column of ICD categories to a data.frame — add_icd_category" />
+<meta property="og:title" content="Recover original series from a vector of year-to-date averages — unroll_year_to_date" />
 
-<meta property="og:description" content="Add a column of ICD categories to a data.frame" />
+<meta property="og:description" content="Recover original series from a vector of year-to-date averages" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -99,59 +99,45 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Add a column of ICD categories to a data.frame</h1>
-    <small class="dont-index">Source: <a href='https://github.com/NateByers/IUHhelpers/blob/master/R/add_icd_category.R'><code>R/add_icd_category.R</code></a></small>
-    <div class="hidden name"><code>add_icd_category.Rd</code></div>
+    <h1>Recover original series from a vector of year-to-date averages</h1>
+    <small class="dont-index">Source: <a href='https://github.com/NateByers/IUHhelpers/blob/master/R/unroll.R'><code>R/unroll.R</code></a></small>
+    <div class="hidden name"><code>unroll_year_to_date.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Add a column of ICD categories to a data.frame</p>
+    <p>Recover original series from a vector of year-to-date averages</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>add_icd_category</span>(<span class='no'>icd</span>, <span class='no'>icd_column</span>, <span class='kw'>icd_type</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"diagnosis"</span>, <span class='st'>"procedure"</span>),
-  <span class='kw'>icd_lookup_column</span> <span class='kw'>=</span> <span class='st'>"global_short_description"</span>, <span class='kw'>parallel</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
-  <span class='kw'>cluster_num</span> <span class='kw'>=</span> <span class='kw pkg'>parallel</span><span class='kw ns'>::</span><span class='fu'><a href='https://www.rdocumentation.org/packages/parallel/topics/detectCores'>detectCores</a></span>() - <span class='fl'>1</span>)</pre>
+    <pre class="usage"><span class='fu'>unroll_year_to_date</span>(<span class='no'>x</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>icd</th>
-      <td><p>A data.frame with ICD 9 or 10 diagnoses.</p></td>
-    </tr>
-    <tr>
-      <th>icd_column</th>
-      <td><p>The name of the column of ICD codes.</p></td>
-    </tr>
-    <tr>
-      <th>icd_type</th>
-      <td><p>Are these diagnosis or procedure codes (diagnosis default).</p></td>
-    </tr>
-    <tr>
-      <th>icd_lookup_column</th>
-      <td><p>Which column from <code>icd_lookup</code> should be returned. You
-can see this data frame by running <code><a href='https://www.rdocumentation.org/packages/utils/topics/data'>data(icd_lookup)</a></code>.</p></td>
-    </tr>
-    <tr>
-      <th>parallel</th>
-      <td><p>Use parallel processing?</p></td>
-    </tr>
-    <tr>
-      <th>cluster_num</th>
-      <td><p>Number of clusters to use if <code>parallel</code> is TRUE.</p></td>
+      <th>x</th>
+      <td><p>a vector of year-to-date averages</p></td>
     </tr>
     </table>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/data.frame'>data.frame</a></span>(<span class='kw'>icd</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='st'>"43852"</span>, <span class='st'>"M93929"</span>, <span class='st'>"W002XXA"</span>))
-
-<span class='fu'>add_icd_category</span>(<span class='kw'>icd</span> <span class='kw'>=</span> <span class='no'>x</span>, <span class='kw'>icd_column</span> <span class='kw'>=</span> <span class='st'>"icd"</span>)</div><div class='output co'>#&gt;       icd global_short_description
-#&gt; 1   43852             Late eff CVD
-#&gt; 2  M93929               Ot bone dx
-#&gt; 3 W002XXA            E Codes: Fall</div></pre>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>dplyr</span>)</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: 'dplyr'</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from 'package:testthat':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    matches</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:stats':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter, lag</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from 'package:base':</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    intersect, setdiff, setequal, union</span></div><div class='input'>
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>1</span>)
+<span class='no'>dat</span> <span class='kw'>&lt;-</span> <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/reexports.html'>tibble</a></span>(<span class='kw'>year</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>2018</span>:<span class='fl'>2019</span>, <span class='kw'>each</span> <span class='kw'>=</span> <span class='fl'>12</span>),
+                     <span class='kw'>month</span> <span class='kw'>=</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/rep'>rep</a></span>(<span class='fl'>1</span>:<span class='fl'>12</span>, <span class='kw'>times</span> <span class='kw'>=</span> <span class='fl'>2</span>),
+                     <span class='kw'>original</span> <span class='kw'>=</span> <span class='fu'><a href='https://dplyr.tidyverse.org/reference/sample.html'>sample</a></span>(<span class='fl'>200</span>:<span class='fl'>300</span>, <span class='fl'>24</span>, <span class='fl'>TRUE</span>)) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/group_by.html'>group_by</a></span>(<span class='no'>year</span>) <span class='kw'>%&gt;%</span>
+  <span class='kw pkg'>dplyr</span><span class='kw ns'>::</span><span class='fu'><a href='https://dplyr.tidyverse.org/reference/mutate.html'>mutate</a></span>(<span class='kw'>ytd</span> <span class='kw'>=</span> <span class='fu'>roll_mean_year_to_date</span>(<span class='no'>original</span>),
+                <span class='kw'>unrolled</span> <span class='kw'>=</span> <span class='fu'>unroll_year_to_date</span>(<span class='no'>ytd</span>))</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
