@@ -107,7 +107,7 @@ iuh_pal <- function(fill=TRUE) {
 #' @export
 #' @importFrom ggplot2 discrete_scale
 scale_color_iuh <- function(...) {
-  discrete_scale("color", "iuh", iuh_pal(), ...)
+  ggplot2::discrete_scale("color", "iuh", iuh_pal(), ...)
 }
 
 #' @rdname scale_iuh
@@ -118,7 +118,7 @@ scale_colour_iuh <- scale_color_iuh
 #' @rdname scale_iuh
 #' @export
 scale_fill_iuh <- function(...) {
-  discrete_scale("fill", "iuh", iuh_pal(), ...)
+  ggplot2::discrete_scale("fill", "iuh", iuh_pal(), ...)
 }
 
 # copied from ggthemes package
