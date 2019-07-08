@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • IUHhelpers</title>
+<title>IU Health color palette (discrete) — iuh_pal • IUHhelpers</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,12 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="IU Health color palette (discrete) — iuh_pal" />
+
+<meta property="og:description" content="IU Health color palette (discrete)
+IU Health color scales
+IU Health color fill scales" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +52,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -94,84 +99,46 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>IU Health color palette (discrete)</h1>
+    <small class="dont-index">Source: <a href='https://github.com/NateByers/IUHhelpers/blob/master/R/theme_iuh.R'><code>R/theme_iuh.R</code></a></small>
+    <div class="hidden name"><code>scale_iuh.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>IU Health color palette (discrete)</p>
+<p>IU Health color scales</p>
+<p>IU Health color fill scales</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>iuh_pal</span>(<span class='kw'>fill</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="add_icd_category.html">add_icd_category()</a></code> </p>
-        </td>
-        <td><p>Add a column of ICD categories to a data.frame</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cleanup_headers.html">cleanup_headers()</a></code> </p>
-        </td>
-        <td><p>Transform vector into strings that can be headers in a data.frame</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="corr_groups.html">corr_groups()</a></code> </p>
-        </td>
-        <td><p>Find highly correlated groups for dimension reduction</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="match_MRNs.html">match_MRNs()</a></code> </p>
-        </td>
-        <td><p>Match MRNs from two EMRs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_iuh.html">iuh_pal()</a></code> <code><a href="scale_iuh.html">scale_color_iuh()</a></code> <code><a href="scale_iuh.html">scale_colour_iuh()</a></code> <code><a href="scale_iuh.html">scale_fill_iuh()</a></code> </p>
-        </td>
-        <td><p>IU Health color palette (discrete)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="theme_iuh.html">theme_iuh()</a></code> </p>
-        </td>
-        <td><p>ggplot2 theme for IU Health graphs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="unroll.html">unroll()</a></code> </p>
-        </td>
-        <td><p>Recover original data series from moving average</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="unroll_year_to_date.html">unroll_year_to_date()</a></code> </p>
-        </td>
-        <td><p>Recover original series from a vector of year-to-date averages</p></td>
-      </tr>
-    </tbody>
+<span class='fu'>scale_color_iuh</span>(<span class='no'>...</span>)
+
+<span class='fu'>scale_colour_iuh</span>(<span class='no'>...</span>)
+
+<span class='fu'>scale_fill_iuh</span>(<span class='no'>...</span>)</pre>
+    
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>fill</th>
+      <td><p>Use the fill palette.</p></td>
+    </tr>
     </table>
-  </div>
+    
 
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
-    </ul>
+      <li><a href="#arguments">Arguments</a></li>
+                </ul>
+
   </div>
 </div>
 

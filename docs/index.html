@@ -81,15 +81,20 @@
 <a class="sourceLine" id="cb1-4" title="4">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"NateByers/IUHhelpers"</span>)</a>
 <a class="sourceLine" id="cb1-5" title="5"></a>
 <a class="sourceLine" id="cb1-6" title="6"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(IUHhelpers)</a></code></pre></div>
+<pre><code>## Registered S3 methods overwritten by 'ggplot2':
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang</code></pre>
 </div>
 <div id="match-mrns" class="section level2">
 <h2 class="hasAnchor">
 <a href="#match-mrns" class="anchor"></a>Match MRNs</h2>
 <p>Match people from two different EMRs.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(x_EMR)</a>
-<a class="sourceLine" id="cb2-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(y_EMR)</a>
-<a class="sourceLine" id="cb2-3" title="3"> </a>
-<a class="sourceLine" id="cb2-4" title="4"><span class="kw"><a href="reference/match_MRNs.html">match_MRNs</a></span>(x_EMR, y_EMR)</a></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(x_EMR)</a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/data">data</a></span>(y_EMR)</a>
+<a class="sourceLine" id="cb3-3" title="3"> </a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="kw"><a href="reference/match_MRNs.html">match_MRNs</a></span>(x_EMR, y_EMR)</a></code></pre></div>
 <pre><code>##   mrn_x first_name_x last_name_x birth_date_x mrn_y first_name_y
 ## 1    11        James       Brown   1978-01-01    21        James
 ## 2    12      Charlie      Manson   1952-05-15    22      Charles
@@ -103,20 +108,40 @@
 ## 4       Brown   1980-01-01    3
 ## 5   Bowers Jr   1980-01-01    2</code></pre>
 </div>
+<div id="iu-health-theme" class="section level2">
+<h2 class="hasAnchor">
+<a href="#iu-health-theme" class="anchor"></a>IU Health Theme</h2>
+<p>Add an IU Health theme to your <code>ggplot2</code> graph.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(ggplot2)</a>
+<a class="sourceLine" id="cb5-2" title="2"></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="kw">ggplot</span>(mpg, <span class="kw">aes</span>(class, <span class="dt">fill =</span> drv)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="reference/theme_iuh.html">theme_iuh</a></span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw"><a href="reference/scale_iuh.html">scale_fill_iuh</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">"IU Health"</span>)</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-4-1.png" width="700"></p>
+<p>Use IU Health fonts.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(extrafont)</a>
+<a class="sourceLine" id="cb6-2" title="2"></a>
+<a class="sourceLine" id="cb6-3" title="3"><span class="co"># it will take a few minutes to import fonts from your operating system</span></a>
+<a class="sourceLine" id="cb6-4" title="4"><span class="kw">font_import</span>(<span class="dt">prompt =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb6-5" title="5"><span class="kw">loadfonts</span>(<span class="dt">quiet =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb6-6" title="6"></a>
+<a class="sourceLine" id="cb6-7" title="7"><span class="kw">ggplot</span>(mpg, <span class="kw">aes</span>(class, <span class="dt">fill =</span> drv)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>() <span class="op">+</span><span class="st"> </span><span class="kw"><a href="reference/theme_iuh.html">theme_iuh</a></span>() <span class="op">+</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb6-8" title="8"><span class="st">  </span><span class="kw"><a href="reference/scale_iuh.html">scale_fill_iuh</a></span>() <span class="op">+</span><span class="st"> </span><span class="kw">ggtitle</span>(<span class="st">"IU Health"</span>)</a></code></pre></div>
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
+</div>
 <div id="correlated-variables" class="section level2">
 <h2 class="hasAnchor">
 <a href="#correlated-variables" class="anchor"></a>Correlated variables</h2>
 <p>Find groups of correlated variables.</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars)</a></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars)</a></code></pre></div>
 <pre><code>## $`1`
 ## [1] "disp" "cyl"</code></pre>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>)</a></code></pre></div>
 <pre><code>## $`1`
 ## [1] "disp" "hp"   "wt"   "cyl" 
 ## 
 ## $`2`
 ## [1] "gear" "am"</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>, <span class="dt">cor_mat =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1"><span class="kw"><a href="reference/corr_groups.html">corr_groups</a></span>(mtcars, <span class="dt">cutoff =</span> <span class="fl">0.75</span>, <span class="dt">cor_mat =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
 <pre><code>## $`1`
 ##           disp        hp        wt       cyl
 ## disp 1.0000000 0.7909486 0.8879799 0.9020329
@@ -133,9 +158,9 @@
 <h2 class="hasAnchor">
 <a href="#icd-categories" class="anchor"></a>ICD categories</h2>
 <p>Add a column of categories to a data.frame of ICD codes</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">icd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"43852"</span>, <span class="st">"M93929"</span>, <span class="st">"W002XXA"</span>))</a>
-<a class="sourceLine" id="cb10-2" title="2"></a>
-<a class="sourceLine" id="cb10-3" title="3"><span class="kw"><a href="reference/add_icd_category.html">add_icd_category</a></span>(<span class="dt">icd =</span> x, <span class="dt">icd_column =</span> <span class="st">"icd"</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">x &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/data.frame">data.frame</a></span>(<span class="dt">icd =</span> <span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"43852"</span>, <span class="st">"M93929"</span>, <span class="st">"W002XXA"</span>))</a>
+<a class="sourceLine" id="cb13-2" title="2"></a>
+<a class="sourceLine" id="cb13-3" title="3"><span class="kw"><a href="reference/add_icd_category.html">add_icd_category</a></span>(<span class="dt">icd =</span> x, <span class="dt">icd_column =</span> <span class="st">"icd"</span>)</a></code></pre></div>
 <pre><code>##       icd global_short_description
 ## 1   43852             Late eff CVD
 ## 2  M93929               Ot bone dx
@@ -145,9 +170,9 @@
 <h2 class="hasAnchor">
 <a href="#cleanup-headers" class="anchor"></a>Cleanup headers</h2>
 <p>Transform column names to work nicely as data.frame headers.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MRN ID"</span>, <span class="st">"First &amp; Middle Name"</span>, <span class="st">"Name: Last"</span>)</a>
-<a class="sourceLine" id="cb12-2" title="2"></a>
-<a class="sourceLine" id="cb12-3" title="3"><span class="kw"><a href="reference/cleanup_headers.html">cleanup_headers</a></span>(column_names)</a></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">column_names &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/c">c</a></span>(<span class="st">"MRN ID"</span>, <span class="st">"First &amp; Middle Name"</span>, <span class="st">"Name: Last"</span>)</a>
+<a class="sourceLine" id="cb15-2" title="2"></a>
+<a class="sourceLine" id="cb15-3" title="3"><span class="kw"><a href="reference/cleanup_headers.html">cleanup_headers</a></span>(column_names)</a></code></pre></div>
 <pre><code>## [1] "MRN_ID"                "First_and_Middle_Name" "Name_Last"</code></pre>
 </div>
   </div>

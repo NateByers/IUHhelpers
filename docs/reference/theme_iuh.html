@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • IUHhelpers</title>
+<title>ggplot2 theme for IU Health graphs — theme_iuh • IUHhelpers</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,7 +30,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="ggplot2 theme for IU Health graphs — theme_iuh" />
+
+<meta property="og:description" content="ggplot2 theme for IU Health graphs" />
+<meta name="twitter:card" content="summary" />
 
 
 
@@ -47,7 +50,7 @@
   </head>
 
   <body>
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -94,84 +97,35 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>ggplot2 theme for IU Health graphs</h1>
+    <small class="dont-index">Source: <a href='https://github.com/NateByers/IUHhelpers/blob/master/R/theme_iuh.R'><code>R/theme_iuh.R</code></a></small>
+    <div class="hidden name"><code>theme_iuh.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    
+    <p>ggplot2 theme for IU Health graphs</p>
+    
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>theme_iuh</span>(<span class='kw'>dark</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+        
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      <tr>
-        
-        <td>
-          <p><code><a href="add_icd_category.html">add_icd_category()</a></code> </p>
-        </td>
-        <td><p>Add a column of ICD categories to a data.frame</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="cleanup_headers.html">cleanup_headers()</a></code> </p>
-        </td>
-        <td><p>Transform vector into strings that can be headers in a data.frame</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="corr_groups.html">corr_groups()</a></code> </p>
-        </td>
-        <td><p>Find highly correlated groups for dimension reduction</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="match_MRNs.html">match_MRNs()</a></code> </p>
-        </td>
-        <td><p>Match MRNs from two EMRs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="scale_iuh.html">iuh_pal()</a></code> <code><a href="scale_iuh.html">scale_color_iuh()</a></code> <code><a href="scale_iuh.html">scale_colour_iuh()</a></code> <code><a href="scale_iuh.html">scale_fill_iuh()</a></code> </p>
-        </td>
-        <td><p>IU Health color palette (discrete)</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="theme_iuh.html">theme_iuh()</a></code> </p>
-        </td>
-        <td><p>ggplot2 theme for IU Health graphs</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="unroll.html">unroll()</a></code> </p>
-        </td>
-        <td><p>Recover original data series from moving average</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="unroll_year_to_date.html">unroll_year_to_date()</a></code> </p>
-        </td>
-        <td><p>Recover original series from a vector of year-to-date averages</p></td>
-      </tr>
-    </tbody>
-    </table>
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>ggplot2</span>)
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/library'>library</a></span>(<span class='no'>extrafont</span>)</div><div class='output co'>#&gt; <span class='message'>Registering fonts with R</span></div><div class='input'>
+<span class='fu'><a href='https://ggplot2.tidyverse.org/reference/ggplot.html'>ggplot</a></span>(<span class='no'>mpg</span>, <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/aes.html'>aes</a></span>(<span class='no'>class</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='no'>drv</span>)) + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/geom_bar.html'>geom_bar</a></span>() + <span class='fu'>theme_iuh</span>() +
+  <span class='fu'><a href='scale_iuh.html'>scale_fill_iuh</a></span>() + <span class='fu'><a href='https://ggplot2.tidyverse.org/reference/labs.html'>ggtitle</a></span>(<span class='st'>"IU Health"</span>)</div><div class='img'><img src='theme_iuh-1.png' alt='' width='700' height='433' /></div></pre>
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
     <ul class="nav nav-pills nav-stacked">
-      <li><a href="#section-all-functions">All functions</a></li>
+            
+      <li><a href="#examples">Examples</a></li>
     </ul>
+
   </div>
 </div>
 

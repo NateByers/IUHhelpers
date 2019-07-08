@@ -1,5 +1,6 @@
 #' Recover original data series from moving average
 #' @export
+#' @importFrom zoo rollmax rollmean
 #' @param moving_series a vector of moving averages
 #' @param original_seed a vector of the first or last numbers of the original series--must be \code{window_length - 1} or longer
 #' @param window_length integer length of the window

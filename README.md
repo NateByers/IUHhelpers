@@ -1,3 +1,9 @@
+---
+title: 'IUHhelpers'
+output: 
+  html_document: 
+    keep_md: yes
+---
 
 
 [![Build Status](https://travis-ci.org/NateByers/IUHhelpers.svg?branch=master)](https://travis-ci.org/NateByers/IUHhelpers)
@@ -21,6 +27,13 @@ library(IUHhelpers)
 ```
 
 
+```
+## Registered S3 methods overwritten by 'ggplot2':
+##   method         from 
+##   [.quosures     rlang
+##   c.quosures     rlang
+##   print.quosures rlang
+```
 
 ## Match MRNs
 
@@ -48,6 +61,36 @@ match_MRNs(x_EMR, y_EMR)
 ## 4       Brown   1980-01-01    3
 ## 5   Bowers Jr   1980-01-01    2
 ```
+
+## IU Health Theme
+
+Add an IU Health theme to your `ggplot2` graph.
+
+
+```r
+library(ggplot2)
+
+ggplot(mpg, aes(class, fill = drv)) + geom_bar() + theme_iuh() + 
+  scale_fill_iuh() + ggtitle("IU Health")
+```
+
+![](README_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+
+Use IU Health fonts.
+
+
+```r
+library(extrafont)
+
+# it will take a few minutes to import fonts from your operating system
+font_import(prompt = FALSE)
+loadfonts(quiet = TRUE)
+
+ggplot(mpg, aes(class, fill = drv)) + geom_bar() + theme_iuh() + 
+  scale_fill_iuh() + ggtitle("IU Health")
+```
+
+![](README_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 ## Correlated variables
 
