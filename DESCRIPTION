@@ -12,7 +12,8 @@ Imports:
     dplyr,
     rlang,
     igraph,
-    stringdist
+    stringdist,
+    ggplot2
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
