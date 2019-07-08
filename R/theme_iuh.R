@@ -1,5 +1,5 @@
 #' ggplot2 theme for IU Health graphs
-#' @importFrom ggplot2 theme theme_dark
+#' @importFrom ggplot2 theme theme_dark theme_gray
 #' @export
 #' @examples 
 #' library(ggplot2)
@@ -37,34 +37,34 @@ theme_iuh <- function(dark = FALSE) {
   }
   
   if(dark) {
-    theme_iuh <- theme_dark()
+    iuh_theme <- theme_dark()
   } else {
-    theme_iuh <- theme_gray()
+    iuh_theme <- theme_gray()
   }
   
-  theme_iuh +
-    theme(panel.border = element_blank(),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.line = element_blank(),
-          legend.title = element_blank(),
-          legend.text = element_text(
-            color = "#231f20", family = font_text, size = 11),
-          legend.background = element_blank(),
-          plot.title = element_text(
-            color = "#981E32", family = font_title, size = 16, face = "bold", h = 0),
-          plot.subtitle = element_text(
-            color = "#981E32", family = font_title, size = 14, h = 0),
-          plot.caption = element_text(
-            color = "231f20", family = font_title, size = 8),
-          plot.tag = element_text(
-            color = "231f20", family = font_title, size = 8),
-          axis.title = element_text(
-            color = "#231f20", family = font_text, size = 12, face = "bold"),
-          axis.text = element_text(
-            color = "#231f20", family = font_text, size = 10),
-          strip.text = element_text(
-            color = "#231f20", family = font_title, size = 12))
+  iuh_theme +
+    ggplot2::theme(panel.border = element_blank(),
+                   panel.grid.major = element_blank(),
+                   panel.grid.minor = element_blank(),
+                   axis.line = element_blank(),
+                   legend.title = element_blank(),
+                   legend.text = element_text(
+                     color = "#231f20", family = font_text, size = 11),
+                   legend.background = element_blank(),
+                   plot.title = element_text(
+                     color = "#981E32", family = font_title, size = 16, face = "bold", h = 0),
+                   plot.subtitle = element_text(
+                     color = "#981E32", family = font_title, size = 14, h = 0),
+                   plot.caption = element_text(
+                     color = "231f20", family = font_title, size = 8),
+                   plot.tag = element_text(
+                     color = "231f20", family = font_title, size = 8),
+                   axis.title = element_text(
+                     color = "#231f20", family = font_text, size = 12, face = "bold"),
+                   axis.text = element_text(
+                     color = "#231f20", family = font_text, size = 10),
+                   strip.text = element_text(
+                     color = "#231f20", family = font_title, size = 12))
   
 }
 
