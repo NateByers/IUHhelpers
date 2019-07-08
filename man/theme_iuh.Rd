@@ -11,7 +11,6 @@ ggplot2 theme for IU Health graphs
 }
 \examples{
 library(ggplot2)
-library(extrafont)
 
 ggplot(mpg, aes(class, fill = drv)) + geom_bar() + theme_iuh() + 
   scale_fill_iuh() + ggtitle("IU Health")
