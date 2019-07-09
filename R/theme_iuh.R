@@ -1,7 +1,8 @@
 #' ggplot2 theme for IU Health graphs
 #' @importFrom ggplot2 theme theme_dark theme_gray
 #' @export
-#' @examples 
+#' @author Joe Walters
+#' @examples
 #' library(ggplot2)
 #' 
 #' ggplot(mpg, aes(class, fill = drv)) + geom_bar() + theme_iuh() + 
