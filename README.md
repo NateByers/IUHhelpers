@@ -20,13 +20,6 @@ library(IUHhelpers)
 ```
 
 
-```
-## Registered S3 methods overwritten by 'ggplot2':
-##   method         from 
-##   [.quosures     rlang
-##   c.quosures     rlang
-##   print.quosures rlang
-```
 
 ## Match MRNs
 
