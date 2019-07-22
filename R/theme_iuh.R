@@ -56,9 +56,9 @@ theme_iuh <- function(dark = FALSE) {
                    plot.subtitle = element_text(
                      color = "#981E32", family = font_title, size = 14, h = 0),
                    plot.caption = element_text(
-                     color = "231f20", family = font_title, size = 8),
+                     color = "#231f20", family = font_title, size = 8),
                    plot.tag = element_text(
-                     color = "231f20", family = font_title, size = 8),
+                     color = "#231f20", family = font_title, size = 8),
                    axis.title = element_text(
                      color = "#231f20", family = font_text, size = 12, face = "bold"),
                    axis.text = element_text(
