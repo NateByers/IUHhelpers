@@ -37,7 +37,7 @@ test_that("different description is added", {
 
 test_that("parallel works", {
   x <- data.frame(icd = c("43852", "M93929", "W002XXA")) %>%
-    add_icd_category(icd_column = "icd", parallel = TRUE)
+    add_icd_category(icd_column = "icd")
   
   x_description <- x %>%
     dplyr::filter(icd == "43852") %>%
