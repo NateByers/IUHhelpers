@@ -4,8 +4,13 @@
 \alias{unroll}
 \title{Recover original data series from moving average}
 \usage{
-unroll(moving_series, original_seed, window_length, align = c("left",
-  "right"), window_function = c("mean", "sum"))
+unroll(
+  moving_series,
+  original_seed,
+  window_length,
+  align = c("left", "right"),
+  window_function = c("mean", "sum")
+)
 }
 \arguments{
 \item{moving_series}{a vector of moving averages}

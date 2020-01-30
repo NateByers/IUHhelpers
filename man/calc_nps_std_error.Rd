@@ -4,8 +4,7 @@
 \alias{calc_nps_std_error}
 \title{Calculate NPS Standard Error}
 \usage{
-calc_nps_std_error(scores, detractors = 0:6, neutrals = 7:8,
-  promoters = 9:10)
+calc_nps_std_error(scores, detractors = 0:6, neutrals = 7:8, promoters = 9:10)
 }
 \arguments{
 \item{scores}{Numeric vector of promoter scores}
